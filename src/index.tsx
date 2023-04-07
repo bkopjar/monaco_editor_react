@@ -3,16 +3,14 @@ import ReactDOM from "react-dom/client";
 
 import Editor from "@monaco-editor/react";
 import prettier from "prettier";
-import babelParser from "prettier/parser-babel";
-
-
+import parser from "prettier/parser-babel";
 
 function App() {
   const editorRef = useRef<any>();
 
   function handleEditorDidMount(editor: any, monaco: any) {
     editorRef.current = editor;
-    
+
     monaco.languages.register({ id: "gherkin" });
     monaco.languages.setMonarchTokensProvider("gherkin", {
       tokenizer: {
@@ -22,7 +20,10 @@ function App() {
         ],
       },
     });
+
+    // Register completion provider for the `gherkin` language
     monaco.languages.registerCompletionItemProvider("gherkin", {
+      triggerCharacters: ["G", "W", "T", "A"], // Trigger completion only when the user types a new step keyword
       provideCompletionItems: function (model: any, position: any) {
         var textUntilPosition = model.getValueInRange({
           startLineNumber: 1,
@@ -30,9 +31,20 @@ function App() {
           endLineNumber: position.lineNumber,
           endColumn: position.column,
         });
-        var match = textUntilPosition.match(/(?:^|\n)(?:Given|When|Then)\s+(.*)$/);
-        if (match) {
-          var keywords = ["I am on the homepage", "I click the button", "I see the success message"];
+        var match = textUntilPosition.match(
+  /(?:^|\n)(?:Given|When|Then|And)\s+(.*)$/
+);
+
+        if (match == null) {
+          var keywords = [
+            "I am on the homepage",
+            "I click the button",
+            "I see the success message",
+            "Given I am on the homepage and I click the button",
+            "When I click the button and I see the success message",
+            "Then I am on the homepage and I see the success message",
+          ];
+
           var suggestions = keywords.map(function (keyword) {
             return {
               label: keyword,
@@ -40,10 +52,13 @@ function App() {
               insertText: keyword,
             };
           });
+          console.log(suggestions);
           return {
             suggestions: suggestions,
           };
         }
+      
+        
         return { suggestions: [] };
       },
     });
@@ -60,7 +75,7 @@ function App() {
     //format the value
     const formatted = prettier.format(unformatted, {
       parser: "babel",
-      plugins: [babelParser],
+      plugins: [parser],
       useTabs: false,
       semi: true,
     });

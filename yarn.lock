@@ -1221,6 +1221,13 @@
     commander "9.4.1"
     source-map-support "^0.5.21"
 
+"@cucumber/gherkin@^24.1.0":
+  version "24.1.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/gherkin/-/gherkin-24.1.0.tgz#ca2dcbe11f5f7d7f30fd073280550bd6eca2363c"
+  integrity sha512-B48XrUod4y3SoXe6mv12q7U1zThUNSK3yHSm/hBJCJZ6RJUJhFk3FVMN/83qOEbsYZe6iG9v+4L1Myf8/q8C6g==
+  dependencies:
+    "@cucumber/messages" "^19.1.4"
+
 "@cucumber/gherkin@^25.0.0", "@cucumber/gherkin@^25.0.2":
   version "25.0.2"
   resolved "https://registry.npmjs.org/@cucumber/gherkin/-/gherkin-25.0.2.tgz"
@@ -7790,7 +7797,16 @@ prelude-ls@~1.1.2:
   resolved "https://registry.npmjs.org/prelude-ls/-/prelude-ls-1.1.2.tgz"
   integrity sha512-ESF23V4SKG6lVSGZgYNpbsiaAkdab6ZgOxe52p7+Kid3W3u3bxR4Vfd/o21dmN7jSt0IwgZ4v5MUd26FEtXE9w==
 
-prettier@^2.8.7:
+prettier-plugin-gherkin@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/prettier-plugin-gherkin/-/prettier-plugin-gherkin-1.1.1.tgz#b42a84b30c1371c823fefa3a7ef240eb2d0a538a"
+  integrity sha512-mOV7Us8mtR8NubLfObPWwUFX9ly5R6tTXZoIgY+Vem9b66aZ6avdWSFE14lKHPr72G3qwlL3mUHtBZfc4Isbew==
+  dependencies:
+    "@cucumber/gherkin" "^24.1.0"
+    "@cucumber/messages" "^19.1.4"
+    prettier "^2.7.1"
+
+prettier@^2.7.1, prettier@^2.8.7:
   version "2.8.7"
   resolved "https://registry.npmjs.org/prettier/-/prettier-2.8.7.tgz"
   integrity sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==
