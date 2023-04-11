@@ -2,8 +2,6 @@ import React, { useRef } from "react";
 import ReactDOM from "react-dom/client";
 
 import Editor from "@monaco-editor/react";
-import prettier from "prettier";
-import parser from "prettier/parser-babel";
 
 function App() {
   const editorRef = useRef<any>();
@@ -24,6 +22,7 @@ function App() {
     // Register completion provider for the `gherkin` language
     monaco.languages.registerCompletionItemProvider("gherkin", {
       triggerCharacters: ["G", "W", "T", "A"], // Trigger completion only when the user types a new step keyword
+
       provideCompletionItems: function (model: any, position: any) {
         var textUntilPosition = model.getValueInRange({
           startLineNumber: 1,
@@ -31,73 +30,51 @@ function App() {
           endLineNumber: position.lineNumber,
           endColumn: position.column,
         });
+
         var match = textUntilPosition.match(
-  /(?:^|\n)(?:Given|When|Then|And)\s+(.*)$/
-);
+          /(?:^|\n)(?:Given|When|Then|And)\s+(.*)$/
+        );
 
         if (match == null) {
-          var keywords = [
-            "I am on the homepage",
-            "I click the button",
-            "I see the success message",
-            "Given I am on the homepage and I click the button",
-            "When I click the button and I see the success message",
-            "Then I am on the homepage and I see the success message",
-          ];
-
-          var suggestions = keywords.map(function (keyword) {
+          // Recalculate the array of rows based on the current content of the editor
+          let content = model.getValue();
+          let arrayOfRows = content.split("\n");
+          let keywords: any[] = [];
+          arrayOfRows.forEach((element: any) => {
+            if(!keywords.includes(element)) {
+              keywords.push(element)
+            }
+        });
+      
+          var suggestions = keywords.map(function (keyword: any) {
             return {
               label: keyword,
               kind: monaco.languages.CompletionItemKind.Keyword,
               insertText: keyword,
             };
           });
+
           console.log(suggestions);
-          return {
-            suggestions: suggestions,
-          };
+          return { suggestions };
         }
-      
-        
-        return { suggestions: [] };
       },
-    });
+    },);
   }
 
   function showValue() {
     console.log(editorRef.current.getValue());
   }
 
-  const onFormatClick = () => {
-    // get current value from editor
-    const unformatted = editorRef.current.getModel().getValue();
-
-    //format the value
-    const formatted = prettier.format(unformatted, {
-      parser: "babel",
-      plugins: [parser],
-      useTabs: false,
-      semi: true,
-    });
-
-    // set the formatted value back in the editor
-    editorRef.current.setValue(formatted);
-  };
-
   return (
     <>
       <div>
-        <button onClick={onFormatClick}>Format</button>
         <button onClick={showValue}>Show value</button>
         <Editor
           language="gherkin"
           theme="vs-dark"
           height="500px"
-          defaultValue={`Feature: Test feature
-  Scenario: Test scenario
-    Given I am on the homepage
-    When I click the button
-    Then I see the success message`}
+  //         defaultValue={`Feature: Test feature
+  // Scenario: Test scenario`}
           onMount={handleEditorDidMount}
           options={{
             wordWrap: "on",
